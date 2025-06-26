@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetDrop</title>
+    <link rel="icon" type="image/x-icon" href="imgs/creative-commons-zero-fill.svg">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Major+Mono+Display&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+        integrity="sha512-XcIsjKMcuVe0Ucj/xgIXQnytNwBttJbNjltBV18IOnru2lDPe9KRRyvCXw6Y5H415vbBLRm8+q6fmLUU7DfO6Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" data-page="home" class="logo major-mono-display-regular">
+                <i class="ri-box-2-line"></i>
+                <span>Asset<br>Drop</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="nav-link active" data-page="home"><i class="ri-home-line"></i>Home</a></li>
+                <li><a href="#" class="nav-link" data-page="saved"><i class="ri-bookmark-fill"></i>Saved</a></li>
+                <li><a href="#" class="nav-link" data-page="aboutFAQ"><i class="ri-information-line"></i>About & FAQ</a>
+                </li>
+                <li><a href="#" class="nav-link" data-page="contact"><i class="ri-question-answer-line"></i>Contact</a>
+                </li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="ri-menu-line"></i></button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div id="homePage" class="page active">
+            <div class="featured-section">
+                <div class="carousel-container">
+                    <button class="carousel-btn carousel-prev" id="carouselPrev"><i
+                            class="ri-arrow-left-s-line"></i></button>
+                    <div class="carousel-wrapper">
+                        <div class="carousel-track" id="carouselTrack">
+                            <!-- Carousel items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    <button class="carousel-btn carousel-next" id="carouselNext"><i
+                            class="ri-arrow-right-s-line"></i></button>
+                </div>
+                <div class="carousel-dots" id="carouselDots">
+                    <!-- Dots will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search assets...">
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all"><i class="ri-shapes-line"></i>All Assets</button>
+                <button class="filter-btn" data-category="characters"><i class="ri-walk-line"></i>Characters</button>
+                <button class="filter-btn" data-category="weapons"><i class="ri-sword-line"></i>Weapons</button>
+                <button class="filter-btn" data-category="environments"><i
+                        class="ri-tree-line"></i>Environments</button>
+                <button class="filter-btn" data-category="vehicles"><i class="ri-car-line"></i>Vehicles</button>
+                <button class="filter-btn" data-category="props"><i class="ri-key-2-line"></i>Props</button>
+            </div>
+
+            <div class="assets-grid" id="assetsGrid"></div>
+
+            <div class="loading" id="loading" style="display: none;">
+                Loading assets...
+            </div>
+
+            <div class="no-results" id="noResults" style="display: none;">
+                No assets found matching your criteria.
+            </div>
+        </div>
+
+        <!-- Add this SAVED PAGE section after the HOME PAGE -->
+        <div id="savedPage" class="page">
+            <div class="header">
+                <h1>Saved Assets</h1>
+                <p>Your personally curated collection of 3D assets</p>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" id="savedSearchInput" placeholder="Search saved assets...">
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all"><i class="ri-shapes-line"></i>All Assets</button>
+                <button class="filter-btn" data-category="characters"><i class="ri-walk-line"></i>Characters</button>
+                <button class="filter-btn" data-category="weapons"><i class="ri-sword-line"></i>Weapons</button>
+                <button class="filter-btn" data-category="environments"><i
+                        class="ri-tree-line"></i>Environments</button>
+                <button class="filter-btn" data-category="vehicles"><i class="ri-car-line"></i>Vehicles</button>
+                <button class="filter-btn" data-category="props"><i class="ri-key-2-line"></i>Props</button>
+            </div>
+
+            <div class="assets-grid" id="savedAssetsGrid"></div>
+
+            <div class="no-results" id="savedNoResults" style="display: none;">
+                <h3>No saved assets found</h3>
+                <p>Start saving assets from the home page to build your personal collection!</p>
+            </div>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="aboutFAQPage" class="page">
+            <div class="about-faq-wrapper">
+                <div class="about-section">
+                    <div class="header">
+                        <h1>About</h1>
+                    </div>
+                
+                    <div class="content-section">
+                        <h2>Our Mission</h2>
+                        <p>As a fellow gamedev, I know how hard it can be to find good free models that are actually usable. That's why
+                            we're volunteering to gather cool, game-ready 3D assets from talented artists all over, making it easier for
+                            creators like us to find what we need without the usual hassle.</p>
+                
+                        <h3>What You'll Find Here</h3>
+                        <p>Our collection includes characters, weapons, environments, vehicles, and props — all ready to drop into your
+                            game. You can check out each asset with an interactive 3D viewer so you get a good look before visiting the
+                            original Sketchfab page.</p>
+                
+                        <h3>Why Quality Matters</h3>
+                        <p>We try to pick assets that are well-made with clean topology, optimized for games, and nicely textured. We
+                            focus on sharing assets that are reliable and ready to use in your projects.</p>
+                    </div>
+                </div>
+                
+
+                <div class="faq-section">
+                    <div class="header">
+                        <h1>FAQ</h1>
+                    </div>
+
+                    <div class="content-section">
+                        <div class="faq-item">
+                            <div class="faq-question">How do I download the 3D assets?</div>
+                            <div class="faq-answer">You can't download assets directly from our site. We provide
+                                previews
+                                and
+                                links to the original Sketchfab pages where you can download the assets according to the
+                                creator's licensing terms.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Are all assets free to use?</div>
+                            <div class="faq-answer">Licensing varies by asset and creator. Each asset on Sketchfab has
+                                its
+                                own
+                                license terms. Some are free for commercial use, others require purchase or attribution.
+                                Always
+                                check the specific license on the Sketchfab page.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Can I request specific types of assets?</div>
+                            <div class="faq-answer">While we can't create custom assets, you can contact us with
+                                suggestions
+                                for
+                                types of assets you'd like to see featured. We're always looking to expand our curated
+                                collection based on community needs.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">How often do you add new assets?</div>
+                            <div class="faq-answer">We regularly update our collection with new assets. New additions
+                                are
+                                typically made weekly, featuring the latest high-quality assets from the Sketchfab
+                                community.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">Can I submit my own assets to be featured?</div>
+                            <div class="faq-answer">Yes! If you're a 3D artist with high-quality game assets on
+                                Sketchfab,
+                                you
+                                can contact us through our contact form. We review submissions based on quality,
+                                originality,
+                                and usefulness for game development.</div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">What file formats are supported?</div>
+                            <div class="faq-answer">The supported formats depend on what each creator provides on
+                                Sketchfab.
+                                Common formats include FBX, OBJ, GLTF, and Blender files. Check the individual asset
+                                pages
+                                for
+                                specific format availability.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contactPage" class="page">
+            <div class="header">
+                <h1>Contact Us</h1>
+                <p>Get in touch with our team</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Send us a message</h2>
+                <p>Have questions, suggestions, or want to submit your assets for consideration? We'd love to hear from
+                    you!</p>
+
+                <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+
+                    <input type="hidden" name="access_key" value="8ebee8f1-9f8d-4464-979b-60ad2aaaa1d6">
+
+                    <div class="form-group">
+                        <label for="name">Name<span class="form-required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="Your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email<span class="form-required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject<span class="form-required">*</span></label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject...</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="asset-submission">Asset Submission</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message<span class="form-required">*</span></label>
+                        <textarea id="message" name="message" rows="6" placeholder="Tell us more..."
+                            required></textarea>
+                    </div>
+
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./scripts/main.js"></script>
+</body>
+
+</html>

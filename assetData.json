@@ -1,0 +1,166 @@
+[
+    {
+      "id": 1,
+      "title": "LP Americans House Mobile",
+      "author": "spaceparmesan",
+      "authorUrl": "https://sketchfab.com/spaceparmesan",
+      "category": "environments",
+      "collection": "residential",
+      "description": "A weathered wooden bungalow with a front porch and staircase, featuring aged siding and lattice skirting, ideal for a rural or small-town setting.",
+      "sketchfabId": "bdd2465e5ff54fe09701cd55b9543b25",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/lp-americans-house-mobile-bdd2465e5ff54fe09701cd55b9543b25"
+    },
+    {
+      "id": 2,
+      "title": "Victorian Row Boat",
+      "author": "Ashley Aslett",
+      "authorUrl": "https://sketchfab.com/AshleyAslett",
+      "category": "vehicles",
+      "collection": "maritime",
+      "description": "A small, weathered rowboat labeled \"Sewer Princess,\" with simple wood construction and a single hanging lantern for low-light travel.",
+      "sketchfabId": "3e9093b6f0ce474da4d8cfea7e01f420",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/victorian-row-boat-3e9093b6f0ce474da4d8cfea7e01f420"
+    },
+    {
+      "id": 3,
+      "title": "Cyberpunk Character",
+      "author": "4d_Bob",
+      "authorUrl": "https://sketchfab.com/3d_Bob",
+      "category": "characters",
+      "collection": "cyberpunk",
+      "description": "A modern male character dressed in tactical black gear with a sleek cybernetic arm, blending urban stealth with sci-fi augmentation.",
+      "sketchfabId": "019f4b3fd3c74ed0bc6c8dbe9cd50d51",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/cyberpunk-character-019f4b3fd3c74ed0bc6c8dbe9cd50d51"
+    },
+    {
+      "id": 4,
+      "title": "Industrial Asset Pack",
+      "author": "ForevereQ",
+      "authorUrl": "https://sketchfab.com/ForevereQ",
+      "category": "environments",
+      "collection": "industrial",
+      "description": "A gritty industrial prop pack featuring pipes, fences, crates, and containers—perfect for populating factory, warehouse, or post-apocalyptic environments.",
+      "sketchfabId": "94c5011772a84e8791779b342467f245",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/industrial-asset-pack-free-94c5011772a84e8791779b342467f245"
+    },
+    {
+      "id": 5,
+      "title": "Hospital Asset Pack",
+      "author": "glimpseskq",
+      "authorUrl": "https://sketchfab.com/glimpseskq",
+      "category": "environments",
+      "collection": "medical",
+      "description": "A modular hospital environment set with walls, pipes, medical props, and furniture—ideal for creating clinics, labs, or abandoned medical scenes.",
+      "sketchfabId": "56618176e1d946479490b1931539d3c5",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/assetspackhospital-56618176e1d946479490b1931539d3c5"
+    },
+    {
+      "id": 6,
+      "title": "Low Poly Office Cubicle Assets",
+      "author": "NobleCrow",
+      "authorUrl": "https://sketchfab.com/NobleCrow",
+      "category": "environments",
+      "collection": "office",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "f430770d9ba5480a89b3e355d05f9385",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/low-poly-office-cubicle-assets-f430770d9ba5480a89b3e355d05f9385"
+    },
+    {
+      "id": 7,
+      "title": "Downtown Buildings Set (Low Poly Model)",
+      "author": "Daniel Zhabotinsky",
+      "authorUrl": "https://sketchfab.com/DanielZhabotinsky",
+      "category": "environments",
+      "collection": "city",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "7378e7fb9c914c39880d9913a6f4e1d6",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/downtown-buildings-set-low-poly-model-7378e7fb9c914c39880d9913a6f4e1d6"
+    },
+    {
+      "id": 8,
+      "title": "Stylised Rocks Asset Pack",
+      "author": "Bl4ckGh0st",
+      "authorUrl": "https://sketchfab.com/Bl4ckGh0st",
+      "category": "environments",
+      "collection": "nature",
+      "description": "An collection of individual and grouped stylised rocks for use in stylised game environments. Uses base colour, roughness and normal maps all at 2k resolution.",
+      "sketchfabId": "d17f102674e84593831f80bc4a451d4d",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/stylised-rocks-asset-pack-d17f102674e84593831f80bc4a451d4d"
+    },
+    {
+      "id": 9,
+      "title": "Japanese Torii Gate",
+      "author": "FOXYSCA",
+      "authorUrl": "https://sketchfab.com/FOXYSCA",
+      "category": "environments",
+      "collection": "historical",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "db2eaf5a5ee846cca9b32c8cfe5bafa0",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/japanese-torii-gate-db2eaf5a5ee846cca9b32c8cfe5bafa0"
+    },
+    {
+      "id": 10,
+      "title": "80s Generic Police Car (Low Poly Model)",
+      "category": "vehicles",
+      "collection": "car",
+      "description": "The inspiration for it was a generic CAFE downsized American sedans. I ignored that the commercial fleet was not affected by this restriction, but I had a model and wanted to make a police car out of it.",
+      "sketchfabId": "61766c1e6e1e4b2b803c174f33433a74",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/80s-generic-police-car-low-poly-model-61766c1e6e1e4b2b803c174f33433a74"
+    },
+    {
+      "id": 11,
+      "title": "Water Tanker/Water Tower",
+      "author": "Mehdi Shahsavan",
+      "authorUrl": "https://sketchfab.com/MehdiShahsavan",
+      "category": "environments",
+      "collection": "urban",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "69811beb5b2d4c31901b3c99e1fcf219",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/water-tower-water-tanker-14-mb-69811beb5b2d4c31901b3c99e1fcf219"
+    },
+    {
+      "id": 12,
+      "title": "Modular Old Wooden Barn and Fence",
+      "category": "environments",
+      "collection": "rural",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "8a99f4dca21448c594a85b747bc4e8f2",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/modular-old-wooden-barn-and-fence-8a99f4dca21448c594a85b747bc4e8f2"
+    },
+    {
+      "id": 13,
+      "title": "Restraurant Kitchen Set (Part 1)",
+      "category": "props",
+      "description": "ADD DESCRIPTION",
+      "sketchfabId": "129dd2f84879477ea261b422d21491f4",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/restaurant-kitchen-set-part-1-129dd2f84879477ea261b422d21491f4"
+    },
+    {
+      "id": 14,
+      "title": "Battle Tank",
+      "category": "vehicles",
+      "collection": "war",
+      "description": "A robust battle tank with rotating turret and detailed armor.",
+      "sketchfabId": "b81008d513954189a063ff901f7abfe4",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/battle-tank-h81008d513954189a063ff901f7abfea"
+    },
+    {
+      "id": 15,
+      "title": "Magic Staff",
+      "category": "weapons",
+      "collection": "fantasy",
+      "description": "An ancient magic staff with glowing runes and mystical powers.",
+      "sketchfabId": "b81008d513954189a063ff901f7abfe4",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/magic-staff-i81008d513954189a063ff901f7abfeb"
+    },
+    {
+      "id": 16,
+      "title": "Fantasy Castle",
+      "category": "environments",
+      "collection": "fantasy",
+      "description": "A grand fantasy castle with towering spires and magical ambiance.",
+      "sketchfabId": "b81008d513954189a063ff901f7abfe4",
+      "sketchfabUrl": "https://sketchfab.com/3d-models/fantasy-castle-j81008d513954189a063ff901f7abfec"
+    }
+  ]
+

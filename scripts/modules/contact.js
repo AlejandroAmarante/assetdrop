@@ -109,7 +109,6 @@ export class ContactModule {
 
 // Global function for backward compatibility
 window.handleContactForm = function (event) {
-  event.preventDefault();
   alert(
     "Thank you for your message! We'll get back to you within 24-48 hours."
   );

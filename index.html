@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Set-Cookie" content="SameSite=None; Secure">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AssetDrop</title>
@@ -214,12 +215,12 @@
                         <label for="subject">Subject<span class="form-required">*</span></label>
                         <select id="subject" name="subject" required>
                             <option value="">Select a subject...</option>
-                            <option value="general">General Inquiry</option>
-                            <option value="asset-submission">Asset Submission</option>
-                            <option value="feedback">Feedback</option>
-                            <option value="report-asset">Report Asset</option>
-                            <option value="asset-removal-request">Asset Removal Request</option>
-                            <option value="other">Other</option>
+                            <option value="[General]">General Inquiry</option>
+                            <option value="[Asset Submission]">Asset Submission</option>
+                            <option value="[Feedback]">Feedback</option>
+                            <option value="[Report Asset]">Report Asset</option>
+                            <option value="[Asset Removal Request]">Asset Removal Request</option>
+                            <option value="[Other]">Other</option>
                         </select>
                     </div>
 
@@ -239,21 +240,7 @@
     </main>
 
     <script type="module" src="./scripts/main.js"></script>
-    <script src="https://web3forms.com/client/script.js" async defer></script>
-    <script>
-        const form = document.getElementById('contactForm');
-
-        form.addEventListener('submit', function (e) {
-
-            const hCaptcha = form.querySelector('textarea[name=h-captcha-response]').value;
-
-            if (!hCaptcha) {
-                e.preventDefault();
-                alert("Please fill out captcha field")
-                return
-            }
-        });
-    </script>
+    <script src="https://web3forms.com/client/script.js?v=2" async defer></script>
 </body>
 
 </html>

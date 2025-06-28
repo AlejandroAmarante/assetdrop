@@ -1,4 +1,4 @@
-// modules/contact.js - Handles contact form functionality
+// modules/contact.js - Handles contact form functionality with CORS fixes
 export class ContactModule {
   constructor() {
     this.form = null;
@@ -16,7 +16,6 @@ export class ContactModule {
     if (this.form) {
       this.form.addEventListener("submit", (e) => this.handleSubmit(e));
     }
-
     // If there's a global contact form handler, bind to that instead
     if (window.handleContactForm) {
       window.handleContactForm = (e) => this.handleSubmit(e);
@@ -25,18 +24,23 @@ export class ContactModule {
 
   handleSubmit(event) {
     event.preventDefault();
-
     const formData = new FormData(event.target);
     const errors = this.validateForm(formData);
+
     if (errors.length > 0) {
       alert("Please fix the following errors:\n" + errors.join("\n"));
       return;
     }
 
-    // Submit to Web3Forms
+    // Submit to Web3Forms with proper CORS settings
     fetch("https://api.web3forms.com/submit", {
       method: "POST",
       body: formData,
+      mode: "cors", // Explicitly set CORS mode
+      credentials: "omit", // Don't send cookies to avoid SameSite issues
+      headers: {
+        Accept: "application/json",
+      },
     })
       .then((response) => response.json())
       .then((data) => {
@@ -62,6 +66,10 @@ export class ContactModule {
   resetForm(form) {
     if (form && form.reset) {
       form.reset();
+      // Also reset hCaptcha if present
+      if (window.hcaptcha) {
+        window.hcaptcha.reset();
+      }
     }
   }
 
@@ -70,7 +78,7 @@ export class ContactModule {
     this.onSubmitCallback = callback;
   }
 
-  // Validate form fields
+  // Validate form fields including hCaptcha
   validateForm(formData) {
     const errors = [];
 
@@ -88,7 +96,22 @@ export class ContactModule {
       errors.push("Message is required");
     }
 
+    // Check hCaptcha validation
+    if (!this.validateCaptcha()) {
+      errors.push("Please complete the captcha verification");
+    }
+
     return errors;
+  }
+
+  // Validate hCaptcha response
+  validateCaptcha() {
+    if (!this.form) return false;
+
+    const hCaptchaResponse = this.form.querySelector(
+      'textarea[name="h-captcha-response"]'
+    );
+    return hCaptchaResponse && hCaptchaResponse.value.trim() !== "";
   }
 
   isValidEmail(email) {
@@ -99,21 +122,17 @@ export class ContactModule {
   // Get form data as object
   getFormData() {
     if (!this.form) return {};
-
     const formData = new FormData(this.form);
     const data = {};
-
     for (let [key, value] of formData.entries()) {
       data[key] = value;
     }
-
     return data;
   }
 
   // Set form data
   setFormData(data) {
     if (!this.form) return;
-
     Object.keys(data).forEach((key) => {
       const field = this.form.querySelector(`[name="${key}"]`);
       if (field) {
@@ -129,4 +148,8 @@ window.handleContactForm = function (event) {
     "Thank you for your message! We'll get back to you within 24-48 hours."
   );
   event.target.reset();
+  // Reset hCaptcha if present
+  if (window.hcaptcha) {
+    window.hcaptcha.reset();
+  }
 };

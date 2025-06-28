@@ -24,8 +24,6 @@ export class ContactModule {
   }
 
   handleSubmit(event) {
-    event.preventDefault();
-
     // Custom callback if provided
     if (this.onSubmitCallback) {
       this.onSubmitCallback(event);

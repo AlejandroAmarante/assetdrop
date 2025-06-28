@@ -26,16 +26,14 @@ export class ContactModule {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    // Validate hCaptcha first
-    if (!this.validateCaptcha()) {
-      return;
-    }
-
     const errors = this.validateForm(formData);
     if (errors.length > 0) {
       alert("Please fix the following errors:\n" + errors.join("\n"));
       return;
     }
+
+    // For GitHub Pages, let Web3Forms handle captcha validation server-side
+    // since client-side validation may fail due to cross-site cookie restrictions
 
     // Submit to Web3Forms
     fetch("https://api.web3forms.com/submit", {
@@ -48,7 +46,13 @@ export class ContactModule {
           this.showSuccessMessage();
           this.resetForm(event.target);
         } else {
-          throw new Error(data.message || "Submission failed");
+          // If Web3Forms returns captcha error, show specific message
+          if (data.message && data.message.toLowerCase().includes("captcha")) {
+            alert("Please complete the captcha verification and try again.");
+            this.resetCaptcha();
+          } else {
+            throw new Error(data.message || "Submission failed");
+          }
         }
       })
       .catch((error) => {

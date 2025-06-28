@@ -24,15 +24,33 @@ export class ContactModule {
   }
 
   handleSubmit(event) {
-    // Custom callback if provided
-    if (this.onSubmitCallback) {
-      this.onSubmitCallback(event);
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const errors = this.validateForm(formData);
+    if (errors.length > 0) {
+      alert("Please fix the following errors:\n" + errors.join("\n"));
       return;
     }
 
-    // Default behavior
-    this.showSuccessMessage();
-    this.resetForm(event.target);
+    // Submit to Web3Forms
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          this.showSuccessMessage();
+          this.resetForm(event.target);
+        } else {
+          throw new Error(data.message || "Submission failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Failed to send message. Please try again.");
+      });
   }
 
   showSuccessMessage(

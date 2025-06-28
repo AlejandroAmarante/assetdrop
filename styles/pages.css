@@ -135,3 +135,14 @@
   backdrop-filter: blur(10px);
   width: 100%;
 }
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+}

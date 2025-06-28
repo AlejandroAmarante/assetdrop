@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AssetDrop</title>
     <link rel="icon" type="image/x-icon" href="imgs/creative-commons-zero-fill.svg">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./styles/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -20,7 +20,7 @@
 <body>
     <nav class="navbar">
         <div class="navbar-content">
-            <a href="#" data-page="home" class="logo major-mono-display-regular">
+            <a href="#" data-page="home" class="logo">
                 <i class="ri-box-2-line"></i>
                 <span>Asset<br>Drop</span>
             </a>
@@ -36,7 +36,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <main class="main-container">
         <!-- HOME PAGE -->
         <div id="homePage" class="page active">
             <div class="featured-section">
@@ -117,24 +117,29 @@
                     <div class="header">
                         <h1>About</h1>
                     </div>
-                
+
                     <div class="content-section">
                         <h2>Our Mission</h2>
-                        <p>As a fellow gamedev, I know how hard it can be to find good free models that are actually usable. That's why
-                            we're volunteering to gather cool, game-ready 3D assets from talented artists all over, making it easier for
+                        <p>As a fellow gamedev, I know how hard it can be to find good free models that are actually
+                            usable. That's why
+                            we're volunteering to gather cool, game-ready 3D assets from talented artists all over,
+                            making it easier for
                             creators like us to find what we need without the usual hassle.</p>
-                
+
                         <h3>What You'll Find Here</h3>
-                        <p>Our collection includes characters, weapons, environments, vehicles, and props — all ready to drop into your
-                            game. You can check out each asset with an interactive 3D viewer so you get a good look before visiting the
+                        <p>Our collection includes characters, weapons, environments, vehicles, and props — all ready to
+                            drop into your
+                            game. You can check out each asset with an interactive 3D viewer so you get a good look
+                            before visiting the
                             original Sketchfab page.</p>
-                
+
                         <h3>Why Quality Matters</h3>
-                        <p>We try to pick assets that are well-made with clean topology, optimized for games, and nicely textured. We
+                        <p>We try to pick assets that are well-made with clean topology, optimized for games, and nicely
+                            textured. We
                             focus on sharing assets that are reliable and ready to use in your projects.</p>
                     </div>
                 </div>
-                
+
 
                 <div class="faq-section">
                     <div class="header">
@@ -153,21 +158,9 @@
 
                         <div class="faq-item">
                             <div class="faq-question">Are all assets free to use?</div>
-                            <div class="faq-answer">Licensing varies by asset and creator. Each asset on Sketchfab has
-                                its
-                                own
-                                license terms. Some are free for commercial use, others require purchase or attribution.
-                                Always
-                                check the specific license on the Sketchfab page.</div>
-                        </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question">Can I request specific types of assets?</div>
-                            <div class="faq-answer">While we can't create custom assets, you can contact us with
-                                suggestions
-                                for
-                                types of assets you'd like to see featured. We're always looking to expand our curated
-                                collection based on community needs.</div>
+                            <div class="faq-answer">All assets are hand picked, and are at the very least CC0
+                                Attribution. If you encounter an asset that is not at least CC0 Attribution, please
+                                utilize the contact form with the subject "Report Asset".</div>
                         </div>
 
                         <div class="faq-item">
@@ -188,16 +181,6 @@
                                 originality,
                                 and usefulness for game development.</div>
                         </div>
-
-                        <div class="faq-item">
-                            <div class="faq-question">What file formats are supported?</div>
-                            <div class="faq-answer">The supported formats depend on what each creator provides on
-                                Sketchfab.
-                                Common formats include FBX, OBJ, GLTF, and Blender files. Check the individual asset
-                                pages
-                                for
-                                specific format availability.</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -205,15 +188,13 @@
 
         <!-- CONTACT PAGE -->
         <div id="contactPage" class="page">
-            <div class="header">
-                <h1>Contact Us</h1>
-                <p>Get in touch with our team</p>
-            </div>
-
-            <div class="content-section">
-                <h2>Send us a message</h2>
-                <p>Have questions, suggestions, or want to submit your assets for consideration? We'd love to hear from
-                    you!</p>
+            <div class="contact-form-wrapper">
+                <div class="header">
+                    <h1>Contact Us</h1>
+                    <p>Have questions, suggestions, or want to submit your assets for consideration? We'd love to hear
+                        from
+                        you!</p>
+                </div>
 
                 <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
 
@@ -221,7 +202,7 @@
 
                     <div class="form-group">
                         <label for="name">Name<span class="form-required">*</span></label>
-                        <input type="text" id="name" name="name" placeholder="Your full name" required>
+                        <input type="text" id="name" name="name" placeholder="Full name" required>
                     </div>
 
                     <div class="form-group">
@@ -236,6 +217,8 @@
                             <option value="general">General Inquiry</option>
                             <option value="asset-submission">Asset Submission</option>
                             <option value="feedback">Feedback</option>
+                            <option value="report-asset">Report Asset</option>
+                            <option value="asset-removal-request">Asset Removal Request</option>
                             <option value="other">Other</option>
                         </select>
                     </div>
@@ -248,11 +231,11 @@
 
                     <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
 
-                    <button type="submit" class="submit-btn">Send Message</button>
+                    <button type="submit" class="submit-btn">Send Message <i class="ri-send-plane-fill"></i></button>
                 </form>
             </div>
         </div>
-    </div>
+    </main>
 
     <script type="module" src="./scripts/main.js"></script>
 </body>

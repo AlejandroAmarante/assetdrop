@@ -16,6 +16,7 @@ export class ContactModule {
     if (this.form) {
       this.form.addEventListener("submit", (e) => this.handleSubmit(e));
     }
+
     // If there's a global contact form handler, bind to that instead
     if (window.handleContactForm) {
       window.handleContactForm = (e) => this.handleSubmit(e);
@@ -24,16 +25,13 @@ export class ContactModule {
 
   handleSubmit(event) {
     event.preventDefault();
-    const formData = new FormData(event.target);
 
+    const formData = new FormData(event.target);
     const errors = this.validateForm(formData);
     if (errors.length > 0) {
       alert("Please fix the following errors:\n" + errors.join("\n"));
       return;
     }
-
-    // For GitHub Pages, let Web3Forms handle captcha validation server-side
-    // since client-side validation may fail due to cross-site cookie restrictions
 
     // Submit to Web3Forms
     fetch("https://api.web3forms.com/submit", {
@@ -46,54 +44,13 @@ export class ContactModule {
           this.showSuccessMessage();
           this.resetForm(event.target);
         } else {
-          // If Web3Forms returns captcha error, show specific message
-          if (data.message && data.message.toLowerCase().includes("captcha")) {
-            alert("Please complete the captcha verification and try again.");
-            this.resetCaptcha();
-          } else {
-            throw new Error(data.message || "Submission failed");
-          }
+          throw new Error(data.message || "Submission failed");
         }
       })
       .catch((error) => {
         console.error("Error:", error);
         alert("Failed to send message. Please try again.");
-        // Reset captcha on error so user can try again
-        this.resetCaptcha();
       });
-  }
-
-  // Validate hCaptcha completion
-  validateCaptcha() {
-    // Check if hcaptcha is available
-    if (typeof hcaptcha === "undefined") {
-      console.warn("hCaptcha not loaded");
-      return true; // Allow submission if hCaptcha isn't loaded (fallback)
-    }
-
-    try {
-      const captchaResponse = hcaptcha.getResponse();
-      if (!captchaResponse || captchaResponse.length === 0) {
-        alert("Please complete the captcha verification before submitting.");
-        return false;
-      }
-      return true;
-    } catch (error) {
-      console.error("Error checking captcha:", error);
-      // If there's an error with captcha, allow submission (graceful degradation)
-      return true;
-    }
-  }
-
-  // Reset hCaptcha widget
-  resetCaptcha() {
-    if (typeof hcaptcha !== "undefined") {
-      try {
-        hcaptcha.reset();
-      } catch (error) {
-        console.error("Error resetting captcha:", error);
-      }
-    }
   }
 
   showSuccessMessage(
@@ -106,8 +63,6 @@ export class ContactModule {
     if (form && form.reset) {
       form.reset();
     }
-    // Also reset the captcha when form is reset
-    this.resetCaptcha();
   }
 
   // Allow custom submit handler
@@ -129,10 +84,6 @@ export class ContactModule {
       errors.push("Please enter a valid email address");
     }
 
-    if (!formData.get("subject")?.trim()) {
-      errors.push("Subject is required");
-    }
-
     if (!formData.get("message")?.trim()) {
       errors.push("Message is required");
     }
@@ -148,17 +99,21 @@ export class ContactModule {
   // Get form data as object
   getFormData() {
     if (!this.form) return {};
+
     const formData = new FormData(this.form);
     const data = {};
+
     for (let [key, value] of formData.entries()) {
       data[key] = value;
     }
+
     return data;
   }
 
   // Set form data
   setFormData(data) {
     if (!this.form) return;
+
     Object.keys(data).forEach((key) => {
       const field = this.form.querySelector(`[name="${key}"]`);
       if (field) {
@@ -174,13 +129,4 @@ window.handleContactForm = function (event) {
     "Thank you for your message! We'll get back to you within 24-48 hours."
   );
   event.target.reset();
-
-  // Reset captcha if available
-  if (typeof hcaptcha !== "undefined") {
-    try {
-      hcaptcha.reset();
-    } catch (error) {
-      console.error("Error resetting captcha:", error);
-    }
-  }
 };

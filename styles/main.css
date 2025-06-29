@@ -4,7 +4,9 @@
 @import url("./components/cards.css");
 @import url("./components/content.css");
 @import url("./components/form.css");
-@import url("./pages.css");
+@import url("./pages/home.css");
+@import url("./pages/aboutFAQ.css");
+@import url("./pages/contact.css");
 
 :root {
   /* Primary Colors */
@@ -110,4 +112,38 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: var(--spacing-xl);
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.header {
+  text-align: center;
+  /* margin-bottom: var(--spacing-2xl); */
+  color: var(--text-primary);
+  margin: 0 auto;
+}
+
+.header h1 {
+  font-family: "Major Mono Display", monospace;
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--text-secondary);
 }

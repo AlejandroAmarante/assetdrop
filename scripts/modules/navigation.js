@@ -6,8 +6,7 @@ export class NavigationModule {
 
   init() {
     this.bindEvents();
-    }
-    
+  }
 
   bindEvents() {
     // Mobile menu toggle
@@ -17,6 +16,8 @@ export class NavigationModule {
     if (mobileMenuBtn && navLinks) {
       mobileMenuBtn.addEventListener("click", () => {
         navLinks.classList.toggle("mobile-open");
+        // Toggle the mobile menu button icon
+        mobileMenuBtn.classList.toggle("open");
       });
     }
 
@@ -26,12 +27,8 @@ export class NavigationModule {
         e.preventDefault();
         const pageId = link.dataset.page;
         this.showPage(pageId);
-
         // Close mobile menu
-        const navLinks = document.getElementById("navLinks");
-        if (navLinks) {
-          navLinks.classList.remove("mobile-open");
-        }
+        this.closeMobileMenu();
       });
     });
 
@@ -43,6 +40,18 @@ export class NavigationModule {
         this.showPage("home");
         this.closeMobileMenu();
       });
+    }
+  }
+
+  closeMobileMenu() {
+    const navLinks = document.getElementById("navLinks");
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+
+    if (navLinks) {
+      navLinks.classList.remove("mobile-open");
+    }
+    if (mobileMenuBtn) {
+      mobileMenuBtn.classList.remove("open");
     }
   }
 
@@ -62,11 +71,9 @@ export class NavigationModule {
     document.querySelectorAll(".nav-link").forEach((link) => {
       link.classList.remove("active");
     });
-
     const activeLink = document.querySelector(
       `.nav-link[data-page="${pageId}"]`
     );
-
     if (activeLink) {
       activeLink.classList.add("active");
     }

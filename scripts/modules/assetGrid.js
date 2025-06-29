@@ -2,7 +2,7 @@ export class AssetGridModule {
   constructor(dataService, savedAssetsService, mode = "home") {
     this.dataService = dataService;
     this.savedAssetsService = savedAssetsService;
-    this.mode = mode; // "home" or "saved"
+    this.mode = mode;
 
     this.gridElement = null;
     this.noResultsElement = null;
@@ -11,32 +11,79 @@ export class AssetGridModule {
     this.renderedCount = 0;
     this.batchSize = 6;
 
-    this.onScroll = this.onScroll.bind(this);
+    // Cache DOM lookups
+    this.cachedElements = new Map();
+
+    // Debounced scroll handler for better performance
+    this.onScroll = this.debounce(this.onScroll.bind(this), 16); // ~60fps
+
+    // Use DocumentFragment for batch DOM operations
+    this.fragment = document.createDocumentFragment();
+
+    // Cache for asset lookup
+    this.assetMap = new Map();
   }
 
   init() {
-    if (this.mode === "home") {
-      this.gridElement = document.getElementById("assetsGrid");
-      this.noResultsElement = document.getElementById("noResults");
+    this.cacheElements();
 
+    if (this.mode === "home") {
       // Subscribe to data service changes (from FilterModule)
       this.dataService.subscribe((assets) => {
         this.assets = this.dataService.getFilteredAssets();
+        this.updateAssetMap();
         this.resetRender();
       });
 
       // Initial load
       this.assets = this.dataService.getFilteredAssets();
     } else {
-      this.gridElement = document.getElementById("savedAssetsGrid");
-      this.noResultsElement = document.getElementById("savedNoResults");
-
       // For saved assets, get them directly
       this.assets = this.savedAssetsService.getSavedAssets();
     }
 
+    this.updateAssetMap();
     this.resetRender();
-    window.addEventListener("scroll", this.onScroll);
+    this.addScrollListener();
+  }
+
+  // Cache DOM elements to avoid repeated queries
+  cacheElements() {
+    if (this.mode === "home") {
+      this.gridElement = this.getCachedElement("assetsGrid");
+      this.noResultsElement = this.getCachedElement("noResults");
+    } else {
+      this.gridElement = this.getCachedElement("savedAssetsGrid");
+      this.noResultsElement = this.getCachedElement("savedNoResults");
+    }
+  }
+
+  getCachedElement(id) {
+    if (!this.cachedElements.has(id)) {
+      this.cachedElements.set(id, document.getElementById(id));
+    }
+    return this.cachedElements.get(id);
+  }
+
+  // Create asset lookup map for O(1) access
+  updateAssetMap() {
+    this.assetMap.clear();
+    this.assets.forEach((asset) => {
+      this.assetMap.set(asset.id, asset);
+    });
+  }
+
+  // Debounce function to limit scroll event frequency
+  debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   }
 
   // Method to reset the grid (called by FilterModule)
@@ -47,21 +94,31 @@ export class AssetGridModule {
     } else {
       this.assets = this.savedAssetsService.getSavedAssets();
     }
+    this.updateAssetMap();
     this.resetRender();
   }
 
   // Method to update assets (called by FilterModule after filtering)
   updateAssets(filteredAssets) {
     this.assets = filteredAssets;
+    this.updateAssetMap();
     this.resetRender();
   }
 
   resetRender() {
     this.renderedCount = 0;
-    if (this.gridElement) this.gridElement.innerHTML = "";
+    if (this.gridElement) {
+      // Use textContent for faster clearing
+      this.gridElement.textContent = "";
+    }
     this.renderNextBatch();
-    // Re-add scroll listener because it might have been removed
-    window.addEventListener("scroll", this.onScroll);
+    this.addScrollListener();
+  }
+
+  addScrollListener() {
+    // Remove existing listener first to avoid duplicates
+    window.removeEventListener("scroll", this.onScroll);
+    window.addEventListener("scroll", this.onScroll, { passive: true });
   }
 
   renderNextBatch() {
@@ -77,30 +134,16 @@ export class AssetGridModule {
       this.renderedCount + this.batchSize
     );
 
+    // Use DocumentFragment for efficient batch DOM insertion
+    const fragment = document.createDocumentFragment();
+
     nextBatch.forEach((asset) => {
-      const cardHTML = this.createAssetCard(asset);
-      const temp = document.createElement("div");
-      temp.innerHTML = cardHTML;
-      const cardElement = temp.firstElementChild;
-
-      const btn = cardElement.querySelector(".asset-save");
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-
-        if (this.mode === "home") {
-          this.handleSaveClick(asset.id, btn);
-        } else {
-          this.savedAssetsService.removeAsset(asset.id);
-          cardElement.remove();
-          if (this.gridElement.children.length === 0) {
-            this.showNoResults();
-          }
-          this.syncOtherGrid();
-        }
-      });
-
-      this.gridElement.appendChild(cardElement);
+      const cardElement = this.createAssetCardElement(asset);
+      fragment.appendChild(cardElement);
     });
+
+    // Single DOM operation instead of multiple appendChild calls
+    this.gridElement.appendChild(fragment);
 
     this.renderedCount += nextBatch.length;
 
@@ -109,7 +152,113 @@ export class AssetGridModule {
     }
   }
 
-  handleSaveClick(assetId, saveBtn) {
+  // Create DOM element directly instead of using innerHTML
+  createAssetCardElement(asset) {
+    const cardElement = document.createElement("div");
+    cardElement.className = "asset-card";
+
+    // Create iframe
+    const iframe = document.createElement("iframe");
+    iframe.className = "asset-embed";
+    iframe.src = `https://sketchfab.com/models/${asset.sketchfabId}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0`;
+    iframe.frameBorder = "0";
+    iframe.allow = "autoplay; fullscreen; vr";
+    iframe.mozAllowFullScreen = true;
+    iframe.webkitAllowFullScreen = true;
+
+    // Create info container
+    const infoDiv = document.createElement("div");
+    infoDiv.className = "asset-info";
+
+    // Category
+    const categoryDiv = document.createElement("div");
+    categoryDiv.className = "asset-category";
+    categoryDiv.textContent = asset.collection
+      ? `${asset.category} • ${asset.collection}`
+      : asset.category;
+
+    // Title
+    const titleElement = document.createElement("h3");
+    titleElement.className = "asset-title";
+    titleElement.textContent = asset.title;
+
+    // Author
+    const authorDiv = document.createElement("div");
+    authorDiv.className = "asset-author";
+    const authorText = document.createTextNode("by ");
+    const authorLink = document.createElement("a");
+    authorLink.href = asset.authorUrl;
+    authorLink.target = "_blank";
+    authorLink.textContent = asset.author;
+    authorDiv.appendChild(authorText);
+    authorDiv.appendChild(authorLink);
+
+    // Description
+    const descElement = document.createElement("p");
+    descElement.className = "asset-description";
+    descElement.textContent = asset.description;
+
+    // Actions container
+    const actionsDiv = document.createElement("div");
+    actionsDiv.className = "asset-actions";
+
+    // Sketchfab link
+    const sketchfabLink = document.createElement("a");
+    sketchfabLink.href = asset.sketchfabUrl;
+    sketchfabLink.target = "_blank";
+    sketchfabLink.className = "asset-link";
+    sketchfabLink.innerHTML =
+      'View on Sketchfab <i class="ri-share-box-line"></i>';
+
+    // Save button
+    const saveBtn = this.createSaveButton(asset);
+
+    // Assemble everything
+    actionsDiv.appendChild(sketchfabLink);
+    actionsDiv.appendChild(saveBtn);
+
+    infoDiv.appendChild(categoryDiv);
+    infoDiv.appendChild(titleElement);
+    infoDiv.appendChild(authorDiv);
+    infoDiv.appendChild(descElement);
+    infoDiv.appendChild(actionsDiv);
+
+    cardElement.appendChild(iframe);
+    cardElement.appendChild(infoDiv);
+
+    return cardElement;
+  }
+
+  createSaveButton(asset) {
+    const isSaved = this.savedAssetsService.isAssetSaved(asset.id);
+
+    const saveBtn = document.createElement("button");
+    saveBtn.className = isSaved ? "asset-save saved" : "asset-save";
+    saveBtn.title =
+      this.mode === "home"
+        ? isSaved
+          ? "Remove from Saved"
+          : "Save Asset"
+        : "Remove from Saved";
+
+    const icon = document.createElement("i");
+    icon.className = isSaved ? "ri-bookmark-fill" : "ri-bookmark-line";
+    saveBtn.appendChild(icon);
+
+    // Use event delegation pattern
+    saveBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      this.handleSaveClick(
+        asset.id,
+        saveBtn,
+        e.currentTarget.closest(".asset-card")
+      );
+    });
+
+    return saveBtn;
+  }
+
+  handleSaveClick(assetId, saveBtn, cardElement) {
     const isSaved = this.savedAssetsService.isAssetSaved(assetId);
 
     if (isSaved) {
@@ -118,11 +267,23 @@ export class AssetGridModule {
       saveBtn.querySelector("i").className = "ri-bookmark-line";
       saveBtn.title = "Save Asset";
     } else {
-      const asset = this.assets.find((a) => a.id === assetId);
+      // Use cached asset from map instead of array.find()
+      const asset = this.assetMap.get(assetId);
       if (asset) this.savedAssetsService.saveAsset(asset);
       saveBtn.classList.add("saved");
       saveBtn.querySelector("i").className = "ri-bookmark-fill";
       saveBtn.title = "Remove from Saved";
+    }
+
+    // Handle removal from saved assets view
+    if (
+      this.mode === "saved" &&
+      !this.savedAssetsService.isAssetSaved(assetId)
+    ) {
+      cardElement.remove();
+      if (this.gridElement.children.length === 0) {
+        this.showNoResults();
+      }
     }
 
     this.syncOtherGrid();
@@ -134,57 +295,15 @@ export class AssetGridModule {
 
     // Only refresh the other grid if it's different from this one
     if (otherGrid && otherGrid !== this) {
-      otherGrid.reset();
+      // Use requestAnimationFrame for non-blocking update
+      requestAnimationFrame(() => {
+        otherGrid.reset();
+      });
     }
   }
 
-  createAssetCard(asset) {
-    const categoryDisplay = asset.collection
-      ? `${asset.category} • ${asset.collection}`
-      : asset.category;
-
-    const isSaved = this.savedAssetsService.isAssetSaved(asset.id);
-    const icon = isSaved ? "ri-bookmark-fill" : "ri-bookmark-line";
-    const btnClass = isSaved ? "asset-save saved" : "asset-save";
-    const title =
-      this.mode === "home"
-        ? isSaved
-          ? "Remove from Saved"
-          : "Save Asset"
-        : "Remove from Saved";
-
-    return `
-			<div class="asset-card">
-				<iframe
-					class="asset-embed"
-					src="https://sketchfab.com/models/${asset.sketchfabId}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0"
-					frameborder="0"
-					allow="autoplay; fullscreen; vr"
-					mozallowfullscreen="true"
-					webkitallowfullscreen="true">
-				</iframe>
-				<div class="asset-info">
-					<div class="asset-category">${categoryDisplay}</div>
-					<h3 class="asset-title">${asset.title}</h3>
-          <div class="asset-author">
-            by <a href="${asset.authorUrl}" target="_blank">${asset.author}</a>
-          </div>
-					<p class="asset-description">${asset.description}</p>
-					<div class="asset-actions">
-						<a href="${asset.sketchfabUrl}" target="_blank" class="asset-link">
-							View on Sketchfab <i class="ri-share-box-line"></i>
-						</a>
-						<button class="${btnClass}" title="${title}">
-							<i class="${icon}"></i>
-						</button>
-					</div>
-				</div>
-			</div>
-		`;
-  }
-
   showNoResults() {
-    if (this.gridElement) this.gridElement.innerHTML = "";
+    if (this.gridElement) this.gridElement.textContent = "";
     if (this.noResultsElement) this.noResultsElement.style.display = "block";
   }
 
@@ -195,12 +314,21 @@ export class AssetGridModule {
   onScroll() {
     const nearBottom =
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 200;
-    if (nearBottom) {
+    if (nearBottom && this.renderedCount < this.assets.length) {
       this.renderNextBatch();
     }
   }
 
   refresh() {
     this.reset();
+  }
+
+  // Cleanup method for proper memory management
+  destroy() {
+    window.removeEventListener("scroll", this.onScroll);
+    this.cachedElements.clear();
+    this.assetMap.clear();
+    this.gridElement = null;
+    this.noResultsElement = null;
   }
 }

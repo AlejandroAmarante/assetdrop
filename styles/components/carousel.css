@@ -121,7 +121,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(99, 102, 241, 0.9);
+  background: var(--bg-glass);
   border: none;
   color: white;
   width: 50px;

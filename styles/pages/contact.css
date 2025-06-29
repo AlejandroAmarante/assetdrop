@@ -1,0 +1,31 @@
+.contact-form-wrapper {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  width: 100%;
+  text-align: center;
+}
+
+.contact-form {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  backdrop-filter: blur(10px);
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+}

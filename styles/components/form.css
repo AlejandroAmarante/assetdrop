@@ -53,6 +53,10 @@
   color: var(--text-primary);
 }
 
+.form-group textarea {
+  resize: vertical;
+}
+
 .submit-btn {
   padding: var(--spacing-md) var(--spacing-xl);
   background: var(--gradient-primary);

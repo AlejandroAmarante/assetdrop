@@ -121,7 +121,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--bg-glass);
+  background: var(--primary-purple-light);
   border: none;
   color: white;
   width: 50px;

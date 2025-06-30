@@ -2,17 +2,25 @@
 export class NavigationModule {
   constructor() {
     this.currentPage = null;
+    // Page titles mapping
+    this.pageTitles = {
+      home: "AssetDrop ● Free 3D Game Assets",
+      saved: "AssetDrop ● Saved Assets",
+      aboutFAQ: "AssetDrop ● About & FAQ",
+      contact: "AssetDrop ● Contact",
+    };
   }
 
   init() {
     this.bindEvents();
+    // Set initial page title
+    this.updatePageTitle("home");
   }
 
   bindEvents() {
     // Mobile menu toggle
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
     const navLinks = document.getElementById("navLinks");
-
     if (mobileMenuBtn && navLinks) {
       mobileMenuBtn.addEventListener("click", () => {
         navLinks.classList.toggle("mobile-open");
@@ -46,13 +54,17 @@ export class NavigationModule {
   closeMobileMenu() {
     const navLinks = document.getElementById("navLinks");
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-
     if (navLinks) {
       navLinks.classList.remove("mobile-open");
     }
     if (mobileMenuBtn) {
       mobileMenuBtn.classList.remove("open");
     }
+  }
+
+  updatePageTitle(pageId) {
+    const title = this.pageTitles[pageId] || "AssetDrop";
+    document.title = title;
   }
 
   showPage(pageId) {
@@ -77,6 +89,9 @@ export class NavigationModule {
     if (activeLink) {
       activeLink.classList.add("active");
     }
+
+    // Update page title
+    this.updatePageTitle(pageId);
 
     this.currentPage = pageId;
   }

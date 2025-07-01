@@ -31,11 +31,27 @@ export class FilterModule {
     // Search input - page-specific
     const searchInputId =
       this.pageId === "home" ? "searchInput" : "savedSearchInput";
+    const clearBtnId = this.pageId === "home" ? "clearBtn" : "savedClearBtn";
+
     const searchInput = document.getElementById(searchInputId);
-    if (searchInput) {
+    const clearBtn = document.getElementById(clearBtnId);
+
+    if (searchInput && clearBtn) {
       searchInput.addEventListener("input", (e) => {
         this.searchTerm = e.target.value;
+        this.toggleClearButton(clearBtn, this.searchTerm);
         this.applyFilters();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        this.clearSearch(searchInput, clearBtn);
+      });
+    }
+
+    const searchBar = pageElement.querySelector(".search-bar");
+    if (searchBar && searchInput) {
+      searchBar.addEventListener("click", () => {
+        searchInput.focus();
       });
     }
   }
@@ -48,6 +64,22 @@ export class FilterModule {
     }
     // Add active class to clicked button
     activeBtn.classList.add("active");
+  }
+
+  toggleClearButton(clearBtn, searchTerm) {
+    if (searchTerm.trim() !== "") {
+      clearBtn.style.display = "block";
+    } else {
+      clearBtn.style.display = "none";
+    }
+  }
+
+  clearSearch(searchInput, clearBtn) {
+    searchInput.value = "";
+    this.searchTerm = "";
+    clearBtn.style.display = "none";
+    this.applyFilters();
+    searchInput.focus();
   }
 
   applyFilters() {
@@ -117,12 +149,20 @@ export class FilterModule {
   setSearchTerm(term) {
     this.searchTerm = term;
     this.applyFilters();
-    // Update UI - page-specific search input
+
+    // Update UI - page-specific search input and clear button
     const searchInputId =
       this.pageId === "home" ? "searchInput" : "savedSearchInput";
+    const clearBtnId = this.pageId === "home" ? "clearBtn" : "savedClearBtn";
+
     const searchInput = document.getElementById(searchInputId);
+    const clearBtn = document.getElementById(clearBtnId);
+
     if (searchInput) {
       searchInput.value = term;
+    }
+    if (clearBtn) {
+      this.toggleClearButton(clearBtn, term);
     }
   }
 
@@ -145,11 +185,16 @@ export class FilterModule {
       const allBtn = pageElement.querySelector('[data-category="all"]');
       if (allBtn) allBtn.classList.add("active");
 
-      // Reset search input
+      // Reset search input and clear button
       const searchInputId =
         this.pageId === "home" ? "searchInput" : "savedSearchInput";
+      const clearBtnId = this.pageId === "home" ? "clearBtn" : "savedClearBtn";
+
       const searchInput = document.getElementById(searchInputId);
+      const clearBtn = document.getElementById(clearBtnId);
+
       if (searchInput) searchInput.value = "";
+      if (clearBtn) clearBtn.style.display = "none";
     }
 
     // Apply the reset filters to update the asset grid

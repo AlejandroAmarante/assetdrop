@@ -7,7 +7,6 @@
     "category": "environments",
     "collection": "residential",
     "description": "A weathered wooden bungalow with a front porch and staircase, featuring aged siding and lattice skirting, ideal for a rural or small-town setting.",
-    "sketchfabId": "bdd2465e5ff54fe09701cd55b9543b25",
     "sketchfabUrl": "https://sketchfab.com/3d-models/lp-americans-house-mobile-bdd2465e5ff54fe09701cd55b9543b25"
   },
   {
@@ -18,7 +17,6 @@
     "category": "vehicles",
     "collection": "maritime",
     "description": "A small, weathered rowboat labeled \"Sewer Princess,\" with simple wood construction and a single hanging lantern for low-light travel.",
-    "sketchfabId": "3e9093b6f0ce474da4d8cfea7e01f420",
     "sketchfabUrl": "https://sketchfab.com/3d-models/victorian-row-boat-3e9093b6f0ce474da4d8cfea7e01f420"
   },
   {
@@ -29,7 +27,6 @@
     "category": "characters",
     "collection": "cyberpunk",
     "description": "A modern male character dressed in tactical black gear with a sleek cybernetic arm, blending urban stealth with sci-fi augmentation.",
-    "sketchfabId": "019f4b3fd3c74ed0bc6c8dbe9cd50d51",
     "sketchfabUrl": "https://sketchfab.com/3d-models/cyberpunk-character-019f4b3fd3c74ed0bc6c8dbe9cd50d51"
   },
   {
@@ -40,7 +37,6 @@
     "category": "environments",
     "collection": "industrial",
     "description": "A gritty industrial prop pack featuring pipes, fences, crates, and containers—perfect for populating factory, warehouse, or post-apocalyptic environments.",
-    "sketchfabId": "94c5011772a84e8791779b342467f245",
     "sketchfabUrl": "https://sketchfab.com/3d-models/industrial-asset-pack-free-94c5011772a84e8791779b342467f245"
   },
   {
@@ -51,19 +47,17 @@
     "category": "environments",
     "collection": "medical",
     "description": "A modular hospital environment set with walls, pipes, medical props, and furniture—ideal for creating clinics, labs, or abandoned medical scenes.",
-    "sketchfabId": "56618176e1d946479490b1931539d3c5",
     "sketchfabUrl": "https://sketchfab.com/3d-models/assetspackhospital-56618176e1d946479490b1931539d3c5"
   },
   {
     "id": 6,
-    "title": "Low Poly Office Cubicle Assets",
-    "author": "NobleCrow",
-    "authorUrl": "https://sketchfab.com/NobleCrow",
-    "category": "environments",
-    "collection": "office",
+    "title": "PBR Knight",
+    "author": "soidev",
+    "authorUrl": "https://sketchfab.com/soidev",
+    "category": "characters",
+    "collection": "medieval",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "f430770d9ba5480a89b3e355d05f9385",
-    "sketchfabUrl": "https://sketchfab.com/3d-models/low-poly-office-cubicle-assets-f430770d9ba5480a89b3e355d05f9385"
+    "sketchfabUrl": "https://sketchfab.com/3d-models/lowpoly-pbr-knight-armour-7e8485a272784e6cb3b5bda68ff319fa"
   },
   {
     "id": 7,
@@ -73,7 +67,6 @@
     "category": "environments",
     "collection": "city",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "7378e7fb9c914c39880d9913a6f4e1d6",
     "sketchfabUrl": "https://sketchfab.com/3d-models/downtown-buildings-set-low-poly-model-7378e7fb9c914c39880d9913a6f4e1d6"
   },
   {
@@ -84,7 +77,6 @@
     "category": "environments",
     "collection": "nature",
     "description": "An collection of individual and grouped stylised rocks for use in stylised game environments. Uses base colour, roughness and normal maps all at 2k resolution.",
-    "sketchfabId": "d17f102674e84593831f80bc4a451d4d",
     "sketchfabUrl": "https://sketchfab.com/3d-models/stylised-rocks-asset-pack-d17f102674e84593831f80bc4a451d4d"
   },
   {
@@ -95,16 +87,16 @@
     "category": "environments",
     "collection": "historical",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "db2eaf5a5ee846cca9b32c8cfe5bafa0",
     "sketchfabUrl": "https://sketchfab.com/3d-models/japanese-torii-gate-db2eaf5a5ee846cca9b32c8cfe5bafa0"
   },
   {
     "id": 10,
-    "title": "80s Generic Police Car (Low Poly Model)",
+    "title": "Generic 80s Police Car",
+    "author": "Daniel Zhabotinsky",
+    "authorUrl": "https://sketchfab.com/DanielZhabotinsky",
     "category": "vehicles",
     "collection": "car",
     "description": "The inspiration for it was a generic CAFE downsized American sedans. I ignored that the commercial fleet was not affected by this restriction, but I had a model and wanted to make a police car out of it.",
-    "sketchfabId": "61766c1e6e1e4b2b803c174f33433a74",
     "sketchfabUrl": "https://sketchfab.com/3d-models/80s-generic-police-car-low-poly-model-61766c1e6e1e4b2b803c174f33433a74"
   },
   {
@@ -115,7 +107,6 @@
     "category": "environments",
     "collection": "urban",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "69811beb5b2d4c31901b3c99e1fcf219",
     "sketchfabUrl": "https://sketchfab.com/3d-models/water-tower-water-tanker-14-mb-69811beb5b2d4c31901b3c99e1fcf219"
   },
   {
@@ -124,7 +115,6 @@
     "category": "environments",
     "collection": "rural",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "8a99f4dca21448c594a85b747bc4e8f2",
     "sketchfabUrl": "https://sketchfab.com/3d-models/modular-old-wooden-barn-and-fence-8a99f4dca21448c594a85b747bc4e8f2"
   },
   {
@@ -134,7 +124,6 @@
     "author": "soidev",
     "authorUrl": "https://sketchfab.com/soidev",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "129dd2f84879477ea261b422d21491f4",
     "sketchfabUrl": "https://sketchfab.com/3d-models/restaurant-kitchen-set-part-1-129dd2f84879477ea261b422d21491f4"
   },
   {
@@ -144,7 +133,6 @@
     "author": "Riskyerick",
     "authorUrl": "https://sketchfab.com/Riskyerick",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "28730661f0b14cd39aed24c830120db5",
     "sketchfabUrl": "https://sketchfab.com/3d-models/game-ready-grenades-set-28730661f0b14cd39aed24c830120db5"
   },
   {
@@ -154,7 +142,6 @@
     "author": "shadowowy",
     "authorUrl": "https://sketchfab.com/shadowowy",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "7cef86bade2b447d841c333bcab9287c",
     "sketchfabUrl": "https://sketchfab.com/3d-models/old-tv-7cef86bade2b447d841c333bcab9287c"
   },
   {
@@ -164,7 +151,6 @@
     "author": "PolyOne Studio",
     "authorUrl": "https://sketchfab.com/polyone",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "7092699196a94b4b9953225caadc23ca",
     "sketchfabUrl": "https://sketchfab.com/3d-models/free-pack-cobwebs-7092699196a94b4b9953225caadc23ca"
   },
   {
@@ -174,7 +160,6 @@
     "author": "petya-petyavich",
     "authorUrl": "https://sketchfab.com/petya-petyavich",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "370214ea42334994ba3d85f626b31227",
     "sketchfabUrl": "https://sketchfab.com/3d-models/gramaphone-370214ea42334994ba3d85f626b31227"
   },
   {
@@ -184,7 +169,6 @@
     "author": "karlwirbelwind",
     "authorUrl": "https://sketchfab.com/karlwirbelwind",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "c4311a0b918643af97904e10c7a34efc",
     "sketchfabUrl": "https://sketchfab.com/3d-models/cc0-newspaper-stack-ready-to-unity-hdrp-c4311a0b918643af97904e10c7a34efc"
   },
   {
@@ -194,7 +178,6 @@
     "author": "kEam",
     "authorUrl": "https://sketchfab.com/keam.wf",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "4520493dab504eb2ac0d4d64848d0878",
     "sketchfabUrl": "https://sketchfab.com/3d-models/wooden-book-shelf-low-poly-game-ready-4520493dab504eb2ac0d4d64848d0878"
   },
   {
@@ -204,7 +187,6 @@
     "author": "kEam",
     "authorUrl": "https://sketchfab.com/keam.wf",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "4520493dab504eb2ac0d4d64848d0878",
     "sketchfabUrl": "https://sketchfab.com/3d-models/wooden-tablechair-low-poly-game-ready-d2b7e1dcfcc94f9bb015d01aad7e6ee8"
   },
   {
@@ -214,7 +196,6 @@
     "author": "kEam",
     "authorUrl": "https://sketchfab.com/keam.wf",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "45a6ab5e5a1a40b8913ab14314734ce8",
     "sketchfabUrl": "https://sketchfab.com/3d-models/bathroom-sink-low-poly-game-ready-45a6ab5e5a1a40b8913ab14314734ce8"
   },
   {
@@ -225,7 +206,6 @@
     "author": "FrodaJan",
     "authorUrl": "https://sketchfab.com/FrodaJan",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "6eb02721fa574c249184779c1242ae07",
     "sketchfabUrl": "https://sketchfab.com/3d-models/brick-house-6eb02721fa574c249184779c1242ae07"
   },
   {
@@ -236,7 +216,6 @@
     "category": "environments",
     "collection": "office",
     "description": "ADD DESCRIPTION",
-    "sketchfabId": "9418a924a50d44c186dd499006b62424",
     "sketchfabUrl": "https://sketchfab.com/3d-models/vending-machine-9418a924a50d44c186dd499006b62424"
   }
 ]

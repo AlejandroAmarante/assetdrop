@@ -152,17 +152,25 @@ export class AssetGridModule {
     }
   }
 
+  getSketchfabModelUID(url) {
+    if (!url || typeof url !== "string") return null;
+    const match = url.match(/[a-f0-9]{32}/i);
+    return match ? match[0] : null;
+  }
+
   // Create DOM element directly instead of using innerHTML
   createAssetCardElement(asset) {
     const cardElement = document.createElement("div");
     cardElement.className = "asset-card";
 
+    const modelUID = this.getSketchfabModelUID(asset.sketchfabUrl);
+
     // Create iframe
     const iframe = document.createElement("iframe");
     iframe.className = "asset-embed";
-    iframe.src = `https://sketchfab.com/models/${asset.sketchfabId}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0`;
+    iframe.src = `https://sketchfab.com/models/${modelUID}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0`;
     iframe.frameBorder = "0";
-    iframe.allow = "autoplay; fullscreen; vr";
+    // iframe.allow = "autoplay; fullscreen; vr";
     iframe.mozAllowFullScreen = true;
     iframe.webkitAllowFullScreen = true;
 

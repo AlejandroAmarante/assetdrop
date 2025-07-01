@@ -28,6 +28,7 @@ class App {
       this.modules.savedAssets = new SavedAssetsService();
       this.modules.savedAssets.init();
 
+
       // Initialize core modules
       this.modules.navigation = new NavigationModule();
       this.modules.carousel = new CarouselModule(

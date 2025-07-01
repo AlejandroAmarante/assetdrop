@@ -1,26 +1,38 @@
-// modules/carousel.js - Handles featured assets carousel with circular progress indicator
+// modules/carousel.js - Simplified and fixed carousel
 export class CarouselModule {
   constructor(dataService, savedAssetsService) {
     this.dataService = dataService;
     this.savedAssetsService = savedAssetsService;
     this.currentSlide = 0;
     this.carouselInterval = null;
-    this.userInteractionTimeout = null;
-    this.progressInterval = null;
+    this.progressStartTime = null;
     this.featuredAssets = [];
     this.autoAdvanceDelay = 5000;
     this.userInteractionDelay = 10000;
-    this.progressStartTime = null;
-    this.progressUpdateInterval = 16; // ~60fps
-    this.pausedTime = 0; // Track accumulated paused time
+    this.pausedTime = 0;
     this.isPaused = false;
+
+    // Cache DOM elements
+    this.elements = {};
+    this.rafId = null;
   }
 
   init() {
     this.featuredAssets = this.dataService.getFeaturedAssets();
+    this.cacheElements();
     this.render();
     this.bindEvents();
     this.startAutoAdvance();
+  }
+
+  cacheElements() {
+    this.elements = {
+      carouselTrack: document.getElementById("carouselTrack"),
+      carouselDots: document.getElementById("carouselDots"),
+      carouselContainer: document.querySelector(".carousel-container"),
+      nextBtn: document.getElementById("carouselNext"),
+      prevBtn: document.getElementById("carouselPrev"),
+    };
   }
 
   render() {
@@ -31,64 +43,112 @@ export class CarouselModule {
   }
 
   renderCarousel() {
-    const carouselTrack = document.getElementById("carouselTrack");
-    if (!carouselTrack) return;
+    if (!this.elements.carouselTrack) return;
 
-    carouselTrack.innerHTML = this.featuredAssets
+    const fragment = document.createDocumentFragment();
+    const tempDiv = document.createElement("div");
+
+    tempDiv.innerHTML = this.featuredAssets
       .map((asset) => this.createCarouselItem(asset))
       .join("");
 
-    // Bind save button events after rendering
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild);
+    }
+
+    this.elements.carouselTrack.innerHTML = "";
+    this.elements.carouselTrack.appendChild(fragment);
+
+    // Simple event delegation for save buttons
     this.bindSaveButtons();
   }
 
   bindSaveButtons() {
-    const saveButtons = document.querySelectorAll(".carousel-save");
-    saveButtons.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+    if (!this.elements.carouselTrack) return;
+
+    // Remove existing listener
+    if (this.saveButtonHandler) {
+      this.elements.carouselTrack.removeEventListener(
+        "click",
+        this.saveButtonHandler
+      );
+    }
+
+    this.saveButtonHandler = (e) => {
+      const saveBtn = e.target.closest(".carousel-save");
+      if (saveBtn) {
         e.preventDefault();
-        e.stopPropagation(); // Prevent carousel interaction
-        const assetId = btn.dataset.assetId;
-        this.handleSaveClick(assetId, btn);
-      });
+        e.stopPropagation();
+        this.handleSaveClick(saveBtn);
+      }
+    };
+
+    this.elements.carouselTrack.addEventListener(
+      "click",
+      this.saveButtonHandler
+    );
+  }
+
+  handleSaveClick(saveBtn) {
+    const assetId = saveBtn.dataset.assetId;
+
+    // Ensure consistent string comparison
+    const assetIdStr = String(assetId);
+    const isSaved = this.savedAssetsService.isAssetSaved(assetIdStr);
+
+    if (isSaved) {
+      // Remove from saved
+      this.savedAssetsService.removeAsset(assetIdStr);
+      this.updateSaveButton(saveBtn, false);
+    } else {
+      // Find and save asset - ensure ID comparison is consistent
+      const asset = this.featuredAssets.find(
+        (a) => String(a.id) === assetIdStr
+      );
+
+      if (asset) {
+        this.savedAssetsService.saveAsset(asset);
+        this.updateSaveButton(saveBtn, true);
+      } else {
+        console.error("Asset not found:", assetIdStr);
+        return;
+      }
+    }
+
+    // Sync other grids
+    this.syncOtherComponents();
+  }
+
+  updateSaveButton(saveBtn, isSaved) {
+    const iconEl = saveBtn.querySelector("i");
+
+    if (isSaved) {
+      saveBtn.classList.add("saved");
+      if (iconEl) iconEl.className = "ri-bookmark-fill";
+      saveBtn.title = "Remove from Saved";
+    } else {
+      saveBtn.classList.remove("saved");
+      if (iconEl) iconEl.className = "ri-bookmark-line";
+      saveBtn.title = "Save Asset";
+    }
+  }
+
+  syncOtherComponents() {
+    // Use requestAnimationFrame for smooth updates
+    requestAnimationFrame(() => {
+      if (window.assetGridHome?.reset) {
+        window.assetGridHome.reset();
+      }
+      if (window.assetGridSaved?.reset) {
+        window.assetGridSaved.reset();
+      }
     });
   }
 
-  handleSaveClick(assetId, saveBtn) {
-    const isSaved = this.savedAssetsService.isAssetSaved(assetId);
-
-    if (isSaved) {
-      this.savedAssetsService.removeAsset(assetId);
-      saveBtn.classList.remove("saved");
-      saveBtn.querySelector("i").className = "ri-bookmark-line";
-      saveBtn.title = "Save Asset";
-    } else {
-      const asset = this.featuredAssets.find((a) => a.id === assetId);
-      if (asset) this.savedAssetsService.saveAsset(asset);
-      saveBtn.classList.add("saved");
-      saveBtn.querySelector("i").className = "ri-bookmark-fill";
-      saveBtn.title = "Remove from Saved";
-    }
-
-    // Sync with other grids if they exist
-    this.syncOtherGrids();
-  }
-
-  syncOtherGrids() {
-    // Sync with asset grids if they exist
-    if (window.assetGridHome) {
-      window.assetGridHome.reset();
-    }
-    if (window.assetGridSaved) {
-      window.assetGridSaved.reset();
-    }
-  }
-
   renderDots() {
-    const carouselDots = document.getElementById("carouselDots");
-    if (!carouselDots) return;
+    if (!this.elements.carouselDots) return;
 
-    carouselDots.innerHTML = this.featuredAssets
+    const dotsHTML = this.featuredAssets
       .map(
         (_, index) =>
           `<button class="carousel-dot ${
@@ -97,160 +157,163 @@ export class CarouselModule {
       )
       .join("");
 
-    // Bind dot events
-    document.querySelectorAll(".carousel-dot").forEach((dot) => {
-      dot.addEventListener("click", () => {
+    this.elements.carouselDots.innerHTML = dotsHTML;
+
+    // Event delegation for dots
+    if (this.dotClickHandler) {
+      this.elements.carouselDots.removeEventListener(
+        "click",
+        this.dotClickHandler
+      );
+    }
+
+    this.dotClickHandler = (e) => {
+      const dot = e.target.closest(".carousel-dot");
+      if (dot) {
         this.handleUserInteraction();
         this.currentSlide = parseInt(dot.dataset.slide);
         this.updateCarousel();
-      });
-    });
+      }
+    };
+
+    this.elements.carouselDots.addEventListener("click", this.dotClickHandler);
   }
 
   renderProgressBar() {
-    // Find the carousel container to append the progress bar
-    const carouselContainer = document.querySelector(".carousel-container");
-    if (!carouselContainer) return;
+    if (!this.elements.carouselContainer) return;
 
-    // Remove existing progress bar if it exists
     const existingProgress =
-      carouselContainer.querySelector(".carousel-progress");
+      this.elements.carouselContainer.querySelector(".carousel-progress");
     if (existingProgress) {
       existingProgress.remove();
     }
 
-    // Create progress bar HTML
-    const progressHTML = `
-      <div class="carousel-progress">
-        <svg class="carousel-progress-svg" width="40" height="40" viewBox="0 0 40 40">
-          <circle 
-            class="carousel-progress-bg" 
-            cx="20" 
-            cy="20" 
-            r="16" 
-            fill="none" 
-            stroke="rgba(255, 255, 255, 0.2)" 
-            stroke-width="2"
-          />
-          <circle 
-            class="carousel-progress-fill" 
-            cx="20" 
-            cy="20" 
-            r="16" 
-            fill="none" 
-            stroke="#ffffff" 
-            stroke-width="2" 
-            stroke-linecap="round"
-            stroke-dasharray="100.53" 
-            stroke-dashoffset="100.53"
-            transform="rotate(-90 20 20)"
-          />
-        </svg>
-        <div class="carousel-progress-icon">
+    const progressDiv = document.createElement("div");
+    progressDiv.className = "carousel-progress";
+    progressDiv.innerHTML = `
+      <svg class="carousel-progress-svg" width="40" height="40" viewBox="0 0 40 40">
+        <circle 
+          class="carousel-progress-bg" 
+          cx="20" cy="20" r="16" 
+          fill="none" 
+          stroke="rgba(255, 255, 255, 0.2)" 
+          stroke-width="2"
+        />
+        <circle 
+          class="carousel-progress-fill" 
+          cx="20" cy="20" r="16" 
+          fill="none" 
+          stroke="#ffffff" 
+          stroke-width="2" 
+          stroke-linecap="round"
+          stroke-dasharray="100.53" 
+          stroke-dashoffset="100.53"
+          transform="rotate(-90 20 20)"
+        />
+      </svg>
+      <div class="carousel-progress-icon">
         <i class="ri-pause-fill carousel-progress-pause"></i>
         <i class="ri-play-fill carousel-progress-play"></i>
-        </div>
       </div>
     `;
 
-    // Insert progress bar into carousel container
-    carouselContainer.insertAdjacentHTML("beforeend", progressHTML);
+    this.elements.carouselContainer.appendChild(progressDiv);
 
-    // Bind progress bar click event
-    const progressBar = carouselContainer.querySelector(".carousel-progress");
-    if (progressBar) {
-      progressBar.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.toggleAutoAdvance();
-      });
-    }
+    progressDiv.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleAutoAdvance();
+    });
+
+    this.elements.progressFill = progressDiv.querySelector(
+      ".carousel-progress-fill"
+    );
+    this.elements.progressBar = progressDiv;
+  }
+
+  getSketchfabModelUID(url) {
+    if (!url || typeof url !== "string") return null;
+    const match = url.match(/[a-f0-9]{32}/i);
+    return match ? match[0] : null;
   }
 
   createCarouselItem(asset) {
-    // Create category display with optional collection
     const categoryDisplay = asset.collection
       ? `${asset.category} • ${asset.collection}`
       : asset.category;
 
-    // Check if asset is saved
-    const isSaved = this.savedAssetsService.isAssetSaved(asset.id);
+    // Ensure consistent string comparison
+    const assetIdStr = String(asset.id);
+    const isSaved = this.savedAssetsService.isAssetSaved(assetIdStr);
     const icon = isSaved ? "ri-bookmark-fill" : "ri-bookmark-line";
     const btnClass = isSaved ? "carousel-save saved" : "carousel-save";
     const title = isSaved ? "Remove from Saved" : "Save Asset";
+    const modelUID = this.getSketchfabModelUID(asset.sketchfabUrl);
 
     return `
-        <div class="carousel-item">
-          <iframe 
-            class="carousel-embed" 
-            src="https://sketchfab.com/models/${asset.sketchfabId}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0"
-            frameborder="0" 
-            allow="autoplay; fullscreen; vr" 
-            mozallowfullscreen="true" 
-            webkitallowfullscreen="true">
-          </iframe>
-          <div class="carousel-content">
-            <div class="carousel-category">${categoryDisplay}</div>
-            <h3 class="carousel-title">${asset.title}</h3>
-            <p class="carousel-author">by <a href="${asset.authorUrl}" target="_blank">${asset.author}</a></p>
-            <p class="carousel-description">${asset.description}</p>
-            <div class="carousel-actions">
-              <a href="${asset.sketchfabUrl}" target="_blank" class="carousel-link">
-                View on Sketchfab
-                <i class="ri-share-box-line"></i>
-              </a>
-              <button class="${btnClass}" title="${title}" data-asset-id="${asset.id}">
-                <i class="${icon}"></i>
-              </button>
-            </div>
+      <div class="carousel-item">
+        <iframe 
+          class="carousel-embed" 
+          src="https://sketchfab.com/models/${modelUID}/embed?autostart=0&ui_theme=dark&ui_controls=1&ui_infos=0&ui_watermark=0"
+          frameborder="0" 
+          mozallowfullscreen="true" 
+          webkitallowfullscreen="true">
+        </iframe>
+        <div class="carousel-content">
+          <div class="carousel-category">${categoryDisplay}</div>
+          <h3 class="carousel-title">${asset.title}</h3>
+          <p class="carousel-author">by <a href="${asset.authorUrl}" target="_blank">${asset.author}</a></p>
+          <p class="carousel-description">${asset.description}</p>
+          <div class="carousel-actions">
+            <a href="${asset.sketchfabUrl}" target="_blank" class="carousel-link">
+              View on Sketchfab
+              <i class="ri-share-box-line"></i>
+            </a>
+            <button class="${btnClass}" title="${title}" data-asset-id="${assetIdStr}">
+              <i class="${icon}"></i>
+            </button>
           </div>
         </div>
-      `;
+      </div>
+    `;
   }
 
   updateCarousel() {
-    const carouselTrack = document.getElementById("carouselTrack");
-    if (!carouselTrack) return;
+    if (!this.elements.carouselTrack) return;
 
-    // Move carousel
-    carouselTrack.style.transform = `translateX(-${this.currentSlide * 100}%)`;
+    this.elements.carouselTrack.style.transform = `translate3d(-${
+      this.currentSlide * 100
+    }%, 0, 0)`;
 
-    // Update dots
-    document.querySelectorAll(".carousel-dot").forEach((dot, index) => {
-      dot.classList.toggle("active", index === this.currentSlide);
-    });
+    if (this.elements.carouselDots) {
+      const dots = this.elements.carouselDots.children;
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle("active", i === this.currentSlide);
+      }
+    }
 
-    // Reset progress bar
     this.resetProgressBar();
-
-    // Re-bind save buttons after carousel update
-    this.bindSaveButtons();
   }
 
   updateProgressBar() {
-    const progressFill = document.querySelector(".carousel-progress-fill");
-    if (!progressFill || !this.progressStartTime) return;
+    if (!this.elements.progressFill || !this.progressStartTime) return;
 
     let elapsed;
     if (this.isPaused) {
-      // If paused, use the elapsed time at the moment we paused
       elapsed = this.pausedTime;
     } else {
-      // If running, calculate current elapsed time
-      const currentTime = Date.now();
-      elapsed = currentTime - this.progressStartTime + this.pausedTime;
+      elapsed = Date.now() - this.progressStartTime + this.pausedTime;
     }
 
     const progress = Math.min(elapsed / this.autoAdvanceDelay, 1);
-    const circumference = 100.53; // 2 * π * r (where r = 16)
+    const circumference = 100.53;
     const offset = circumference * (1 - progress);
 
-    progressFill.style.strokeDashoffset = offset;
+    this.elements.progressFill.style.strokeDashoffset = offset;
   }
 
   resetProgressBar() {
-    const progressFill = document.querySelector(".carousel-progress-fill");
-    if (progressFill) {
-      progressFill.style.strokeDashoffset = "100.53";
+    if (this.elements.progressFill) {
+      this.elements.progressFill.style.strokeDashoffset = "100.53";
     }
     this.progressStartTime = Date.now();
     this.pausedTime = 0;
@@ -262,15 +325,19 @@ export class CarouselModule {
     if (!this.progressStartTime) {
       this.progressStartTime = Date.now();
     }
-    this.progressInterval = setInterval(() => {
+
+    const updateProgress = () => {
       this.updateProgressBar();
-    }, this.progressUpdateInterval);
+      this.rafId = requestAnimationFrame(updateProgress);
+    };
+
+    this.rafId = requestAnimationFrame(updateProgress);
   }
 
   stopProgressUpdate() {
-    if (this.progressInterval) {
-      clearInterval(this.progressInterval);
-      this.progressInterval = null;
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
     }
   }
 
@@ -289,19 +356,16 @@ export class CarouselModule {
   startAutoAdvance() {
     this.stopAutoAdvance();
 
-    // Calculate remaining time if we're resuming
     let delay = this.autoAdvanceDelay;
     if (this.isPaused && this.pausedTime > 0) {
       delay = Math.max(this.autoAdvanceDelay - this.pausedTime, 100);
     }
 
-    // Reset timeline for new cycle
     this.progressStartTime = Date.now();
     this.isPaused = false;
 
     this.carouselInterval = setTimeout(() => {
       this.nextSlide();
-      // After first advance, use normal interval
       this.carouselInterval = setInterval(
         () => this.nextSlide(),
         this.autoAdvanceDelay
@@ -310,10 +374,8 @@ export class CarouselModule {
 
     this.startProgressUpdate();
 
-    // Update progress bar state
-    const progressBar = document.querySelector(".carousel-progress");
-    if (progressBar) {
-      progressBar.classList.remove("paused");
+    if (this.elements.progressBar) {
+      this.elements.progressBar.classList.remove("paused");
     }
   }
 
@@ -324,10 +386,8 @@ export class CarouselModule {
       this.carouselInterval = null;
     }
 
-    // Capture the current elapsed time before stopping
     if (this.progressStartTime && !this.isPaused) {
-      const currentTime = Date.now();
-      this.pausedTime = currentTime - this.progressStartTime + this.pausedTime;
+      this.pausedTime = Date.now() - this.progressStartTime + this.pausedTime;
       this.isPaused = true;
     }
 
@@ -335,119 +395,101 @@ export class CarouselModule {
   }
 
   toggleAutoAdvance() {
-    const progressBar = document.querySelector(".carousel-progress");
-
     if (this.carouselInterval) {
-      // Currently running, so pause
       this.stopAutoAdvance();
-      if (progressBar) {
-        progressBar.classList.add("paused");
+      if (this.elements.progressBar) {
+        this.elements.progressBar.classList.add("paused");
       }
     } else {
-      // Currently paused, so resume
       this.startAutoAdvance();
-      if (progressBar) {
-        progressBar.classList.remove("paused");
+      if (this.elements.progressBar) {
+        this.elements.progressBar.classList.remove("paused");
       }
     }
   }
 
   handleUserInteraction() {
-    // Stop auto-advance
     this.stopAutoAdvance();
 
-    // Show paused state
-    const progressBar = document.querySelector(".carousel-progress");
-    if (progressBar) {
-      progressBar.classList.add("paused");
+    if (this.elements.progressBar) {
+      this.elements.progressBar.classList.add("paused");
     }
 
-    // Clear existing timeout
     if (this.userInteractionTimeout) {
       clearTimeout(this.userInteractionTimeout);
     }
 
-    // Restart auto-advance after delay
     this.userInteractionTimeout = setTimeout(() => {
       this.startAutoAdvance();
     }, this.userInteractionDelay);
   }
 
   bindEvents() {
-    const nextBtn = document.getElementById("carouselNext");
-    const prevBtn = document.getElementById("carouselPrev");
-    const carouselContainer = document.querySelector(".carousel-container");
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
+    if (this.elements.nextBtn) {
+      this.elements.nextBtn.addEventListener("click", () => {
         this.handleUserInteraction();
         this.nextSlide();
       });
     }
 
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
+    if (this.elements.prevBtn) {
+      this.elements.prevBtn.addEventListener("click", () => {
         this.handleUserInteraction();
         this.prevSlide();
       });
     }
 
-    // Handle any interaction within the carousel container
-    if (carouselContainer) {
-      carouselContainer.addEventListener("click", (e) => {
-        // Don't trigger on progress bar clicks or save button clicks
+    // Simplified container event handling - don't interfere with save buttons
+    if (this.elements.carouselContainer) {
+      this.containerClickHandler = (e) => {
+        // Only trigger user interaction for non-interactive elements
         if (
           !e.target.closest(".carousel-progress") &&
-          !e.target.closest(".carousel-save")
+          !e.target.closest(".carousel-save") &&
+          !e.target.closest(".carousel-link") &&
+          !e.target.closest(".carousel-dot")
         ) {
           this.handleUserInteraction();
         }
-      });
+      };
 
-      carouselContainer.addEventListener("touchstart", (e) => {
-        if (
-          !e.target.closest(".carousel-progress") &&
-          !e.target.closest(".carousel-save")
-        ) {
-          this.handleUserInteraction();
-        }
-      });
-
-      carouselContainer.addEventListener("mousedown", (e) => {
-        if (
-          !e.target.closest(".carousel-progress") &&
-          !e.target.closest(".carousel-save")
-        ) {
-          this.handleUserInteraction();
-        }
-      });
+      this.elements.carouselContainer.addEventListener(
+        "click",
+        this.containerClickHandler
+      );
     }
-  }
-
-  // Method to refresh carousel save states (can be called when saved assets change)
-  refreshSaveStates() {
-    const saveButtons = document.querySelectorAll(".carousel-save");
-    saveButtons.forEach((btn) => {
-      const assetId = btn.dataset.assetId;
-      const isSaved = this.savedAssetsService.isAssetSaved(assetId);
-
-      if (isSaved) {
-        btn.classList.add("saved");
-        btn.querySelector("i").className = "ri-bookmark-fill";
-        btn.title = "Remove from Saved";
-      } else {
-        btn.classList.remove("saved");
-        btn.querySelector("i").className = "ri-bookmark-line";
-        btn.title = "Save Asset";
-      }
-    });
   }
 
   destroy() {
     this.stopAutoAdvance();
     this.stopProgressUpdate();
+
     if (this.userInteractionTimeout) {
       clearTimeout(this.userInteractionTimeout);
     }
+
+    // Clean up event listeners
+    if (this.elements.carouselTrack && this.saveButtonHandler) {
+      this.elements.carouselTrack.removeEventListener(
+        "click",
+        this.saveButtonHandler
+      );
+    }
+
+    if (this.elements.carouselDots && this.dotClickHandler) {
+      this.elements.carouselDots.removeEventListener(
+        "click",
+        this.dotClickHandler
+      );
+    }
+
+    if (this.elements.carouselContainer && this.containerClickHandler) {
+      this.elements.carouselContainer.removeEventListener(
+        "click",
+        this.containerClickHandler
+      );
+    }
+
+    this.elements = {};
   }
 }
